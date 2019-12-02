@@ -1,14 +1,27 @@
 \NeedsTeXFormat{LaTeX2e}[2007/10/19]
-\ProvidesClass{tongjithesis}[2019/03/24 v0.1 The LaTeX template for bachelor thesis of Tongji University]
-\typeout{Document Class `tongjithesis' v0.1 by SXKDZ (2019/03)}
+\ProvidesClass{tongjithesis}[2019/05/17 v0.2.5 The LaTeX template for bachelor thesis of Tongji University]
+\typeout{Document Class `tongjithesis' v0.2.5 by SXKDZ (2019/05)}
 
 %%% class options %%%
 \newif\iftongji@color\tongji@colorfalse
+\newif\iftongji@debug\tongji@debugfalse
+\newif\iftongji@compressed\tongji@compressedfalse
+\newif\iftongji@notimes\tongji@notimesfalse
 \DeclareOption{color}{\tongji@colortrue}
+\DeclareOption{debug}{\tongji@debugtrue}
+\DeclareOption{notimes}{\tongji@notimestrue}
+\DeclareOption{compressed}{\tongji@compressedtrue}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ctexbook}}
 \ProcessOptions\relax
 
 \LoadClass[zihao=5,a4paper,oneside]{ctexbook}
+
+% compress space between punctuations by `punct=banjiao`
+\iftongji@compressed
+\ctexset{
+	punct=banjiao
+}
+\fi
 
 %%% global packages %%%
 \RequirePackage{ifthen}
@@ -16,40 +29,97 @@
 %%% Chinese support %%%
 \RequirePackage{xeCJK}
 
-% change equation numbering with Chinese parenthesis
-\def\tagform@#1{\maketag@@@{（\ignorespaces#1\unskip\@@italiccorr）}}
+% support circled numbers and special characters
+\xeCJKsetcharclass{`①}{`⑩}{1}
+\XeTeXcharclass`┊=1
 
 %%% space setting %%%
 \RequirePackage{setspace}
 
 %%% page geometry %%%
-\RequirePackage{geometry}
-\newgeometry{
-	top=24mm, bottom=20mm, left=35mm, right=20mm,
-	includefoot,
-	% showframe
-}
-\savegeometry{tongji@bachelorgeometry}
-\loadgeometry{tongji@bachelorgeometry}
+\RequirePackage[top=24mm,bottom=20mm,left=35mm,right=20mm,includefoot]{geometry}
 
 %%% font specification %%%
 \setCJKmainfont[BoldFont=FZHei-B01S, ItalicFont=FZKai-Z03S,Mapping=fullwidth-stop]{FZShuSong-Z01S}
 \setCJKmonofont[Mapping=fullwidth-stop]{FZKai-Z03S}
 
-\setCJKfamilyfont{hei}{FZHei-B01S}
-\setCJKfamilyfont{cuhei}{FZDaHei-B02S}
-\setCJKfamilyfont{songhei}{FZSongHei-B07S}
+\setCJKfamilyfont{kai}[Mapping=fullwidth-stop]{FZKai-Z03S}
+\setCJKfamilyfont{hei}[Mapping=fullwidth-stop]{FZHei-B01S}
+\setCJKfamilyfont{cuhei}[Mapping=fullwidth-stop]{FZDaHei-B02S}
+\setCJKfamilyfont{songhei}[Mapping=fullwidth-stop]{FZSongHei-B07S}
 
-\renewcommand{\heiti}[0]{\CJKfamily{hei}}
+\newcommand{\kaiti}{\CJKfamily{kai}}
+\renewcommand{\heiti}{\CJKfamily{hei}}
 \newcommand{\cuheiti}{\CJKfamily{cuhei}}
 \newcommand{\songheiti}{\CJKfamily{songhei}}
+
+%%% hyperref and url %%%
+\RequirePackage[xetex,unicode]{hyperref}
+\iftongji@color
+	\hypersetup{colorlinks}
+\else
+	\hypersetup{hidelinks}
+\fi
+\hypersetup{
+	bookmarksnumbered,
+	bookmarksopen,
+	pdfdisplaydoctitle,
+	pdfsubject=同济大学毕业设计（论文）,
+	pdfcreator=TongjiThesis by SXKDZ,
+}
+
+\RequirePackage{etoolbox}
+\AtBeginDocument{
+	\hypersetup{
+		pdftitle=\tongji@thesistitle,
+		pdfauthor=\tongji@thesisauthor,
+		pdfkeywords=\tongji@keyword,
+	}
+}
+
+\PassOptionsToPackage{hyphens}{url}
+\def\UrlFont{\ttfamily}
 
 %%% math symbols %%%
 \RequirePackage{amsmath,amssymb,amsfonts,mathrsfs,bm}
 \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
 \RequirePackage{lmodern}
+
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
+
+\RequirePackage{accents}
+% left arrow over text
+\DeclareRobustCommand{\cev}[1]{%
+	\mathpalette\do@cev{#1}%
+}
+\newcommand{\do@cev}[2]{%
+	\fix@cev{#1}{+}%
+	\reflectbox{$\m@th#1\vec{\reflectbox{$\fix@cev{#1}{-}\m@th#1#2\fix@cev{#1}{+}$}}$}%
+	\fix@cev{#1}{-}%
+}
+\newcommand{\fix@cev}[2]{%
+	\ifx#1\displaystyle
+		\mkern#23mu
+	\else
+		\ifx#1\textstyle
+			\mkern#23mu
+		\else
+			\ifx#1\scriptstyle
+				\mkern#22mu
+			\else
+				\mkern#22mu
+			\fi
+		\fi
+	\fi
+}
+
+% change global font to Times New Roman
+\RequirePackage{fontspec}
+\ifthenelse{\NOT \boolean{tongji@notimes}}{\setmainfont{Times New Roman}}{}
+
+% change equation numbering with Chinese parenthesis
+\def\tagform@#1{\maketag@@@{（\ignorespaces#1\unskip\@@italiccorr）}}
 
 %%% theorem %%%
 \theoremsymbol{\ensuremath{\square}}
@@ -74,14 +144,12 @@
 \newtheorem{conjecture}{猜想}[chapter]
 
 %%% bibliographies %%%
-\usepackage{natbib}
-\usepackage{gbt7714}
-\setlength{\bibsep}{0.0pt}
+\RequirePackage[backend=biber,style=gb7714-2015,gbpub=false]{biblatex}
+\renewcommand{\citet}[1]{\textcite{#1}}
 
 %%% glutter %%%
-\usepackage{fancybox}
-\newfontfamily\adobesong{Adobe Song Std}
-\fancyput(-0.75cm,-13cm){\adobesong{\parbox{10pt}{┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\装\\┊\\┊\\┊\\┊\\┊\\订\\┊\\┊\\┊\\┊\\┊\\线\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊\\┊}}}
+\RequirePackage{fancybox}
+\fancyput(-0.75cm,-13cm){\parbox{1em}{┊┊┊┊┊┊┊┊┊┊┊┊┊装┊┊┊┊┊订┊┊┊┊┊线┊┊┊┊┊┊┊┊┊┊┊┊┊}}
 
 %%% header and footer %%%
 \RequirePackage{fancyhdr,lastpage}
@@ -120,32 +188,16 @@
 }
 
 %%% cross reference %%%
-\RequirePackage[xetex,unicode]{hyperref}
-\iftongji@color
-	\hypersetup{colorlinks}
-\else
-	\hypersetup{hidelinks}
-\fi
-\hypersetup{
-	bookmarksnumbered,
-	bookmarksopen,
-	pdfdisplaydoctitle,
-	pdfsubject=同济大学毕业设计（论文）,
-	pdfcreator=TongjiThesis by SXKDZ,
-}
-
-\RequirePackage{etoolbox}
-\AtBeginDocument{
-	\hypersetup{
-		pdftitle=\tongji@thesistitle,
-		pdfauthor=\tongji@thesisauthor,
-		pdfkeywords=\tongji@keyword,
-	}
-}
+\newcommand*{\tabref}[1]{\tablename~\ref{#1}}
+\newcommand*{\figref}[1]{\figurename~\ref{#1}}
+\newcommand*{\algoref}[1]{算法~\ref{#1}}
+\newcommand*{\listingref}[1]{\lstlistingname~\ref{#1}}
+\renewcommand*{\eqref}[1]{公式（\ref{#1}）}
+\newcommand*{\secref}[1]{第~\ref{#1}~节}
+\newcommand*{\chapref}[1]{第~\ref{#1}~章}
 
 %%% tables %%%
-\RequirePackage{booktabs,multirow,longtable}
-\newcommand{\ulinecvcbc}[1]{\uline{\makebox[18em][c]{#1}}}
+\RequirePackage{booktabs,multirow,longtable,diagbox}
 
 % redefining table/tabular/tabularx/longtable environments with texts of \zihao{-5}
 \renewcommand{\arraystretch}{1.2}
@@ -156,15 +208,18 @@
 \AtBeginEnvironment{longtable}{\zihao{-5}}
 
 %%% captions %%%
-\RequirePackage[skip=3pt,width=.75\textwidth,font=small,labelsep=space]{caption}
+\RequirePackage[skip=3pt,width=.8\textwidth,font=small,labelsep=space]{caption}
+
+\RequirePackage{subcaption}
+\DeclareCaptionLabelFormat{quanjiaoparens}{（{#2}）}
+\captionsetup[sub]{font=small,labelformat=quanjiaoparens}
 
 % continued captions for longtables
 \DeclareCaptionLabelFormat{continuedlabel}{续#1#2}
 \DeclareCaptionStyle{continued}[justification=raggedleft]{skip=3pt,width=.75\textwidth,font=small,labelformat=continuedlabel}
 
 %%% figures %%%
-\RequirePackage{graphicx}
-\graphicspath{{figure/}}
+\RequirePackage{graphicx,float}
 
 %%% title formatting %%%
 \setcounter{secnumdepth}{5}
@@ -227,7 +282,7 @@
 		{}{\titlerule*[4pt]{.}\contentspage}
 	\titlecontents{section}[2em]{}
 		{\contentspush{\thecontentslabel\ }}
-		{}{\titlerule*[4pt]{.}\contentspage}    
+		{}{\titlerule*[4pt]{.}\contentspage}
 	\titlecontents{subsection}[4em]{}
 		{\contentspush{\thecontentslabel\ }}
 		{}{\titlerule*[4pt]{.}\contentspage}
@@ -287,19 +342,57 @@
 %%% lists %%%
 % circled numbers
 \RequirePackage{tikz}
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{%
-	\node[shape=circle,fill=blue!20,draw,inner sep=2pt] (char) {#1};}}
+\newcommand{\circled}[2][]{
+	\tikz[baseline=(char.base)]{
+		\node[shape = circle, draw, inner sep = 1pt]
+		(char) {\phantom{\ifblank{#1}{#2}{#1}}};%
+		\node at (char.center)
+		{\makebox[0pt][c]{#2}};
+	}
+}
+\robustify{\circled}
+\newcommand{\dcircled}[1]{\circled[00]{#1}}
 
-\RequirePackage{enumitem}
-\setlist{noitemsep}
-\setlist[1,2]{labelindent=\parindent}
+\RequirePackage{enumitem,calc}
 \setlist[enumerate,1]{label=（\arabic*）}
 \setlist[enumerate,2]{label=\circled{\arabic*}}
-\setlist{
-	topsep=0pt,
-	itemsep=0pt,
-	partopsep=0pt,
-	parsep=\parskip,
+
+% first line indention only
+\newlist{fitemize}{itemize}{1}
+\setlist[fitemize]{
+	label={\(\bullet\)},
+	align=right,
+	labelwidth=2.5em,
+	labelsep=.5em,
+	itemindent=3em,
+	leftmargin=0pt,
+	nosep
+}
+
+\newlist{fbenumerate}{enumerate}{1}
+\setlist[fbenumerate]{
+	label={[\arabic*]},
+	align=right,
+	labelwidth=2.5em,
+	labelsep=.5em,
+	itemindent=3em,
+	leftmargin=0pt,
+	nosep
+}
+
+\setlist[itemize]{
+	labelwidth=*,
+	labelindent=\parindent,
+	leftmargin=*,
+	labelsep=.5em,
+	nosep
+}
+\setlist[enumerate]{
+	labelwidth=*,
+	labelindent=\parindent,
+	leftmargin=*,
+	labelsep=0pt,
+	nosep
 }
 
 %%% misc %%%
@@ -308,6 +401,22 @@
 	\@mainmatterfalse
 	\pagenumbering{Roman}
 }
+
+% debug for framing and line numbering
+\iftongji@debug
+	\geometry{showframe}
+	
+	\RequirePackage[mathlines]{lineno}
+	\setpagewiselinenumbers
+	\linenumbers
+	% \modulolinenumbers[5]
+\fi
+
+% circled numbering for footnote
+\RequirePackage[perpage,symbol*]{footmisc}
+\DefineFNsymbols{fncircled}{①②③④⑤⑥⑦⑧⑨⑩}
+\setfnsymbol{fncircled}
+\renewcommand\@makefntext[1]{\@thefnmark~#1}
 
 %%% front cover %%%
 \let\oldtabular\tabular
@@ -318,6 +427,11 @@
 	\zihao{-3}\oldtabular[#1]
 	}{\renewcommand{\arraystretch}{1.2}\endoldtabular
 }
+\newcommand{\ulinecentered}[1]{\uline{\makebox[18em][c]{#1}}}
+%\newcommand{\ulinecentered}[1]{\fbox[b]{\parbox[t]{18em}{\centering #1}}}
+
+\RequirePackage{array}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
 
 \newcommand{\MakeFrontCover}{
 	\begin{titlepage}
@@ -334,15 +448,15 @@
 	\zihao{1}{\textbf{毕业设计（论文）}}
 	\vskip 80pt
 
-	\begin{information}{cc}	
-		课题名称 & \ulinecvcbc{\tongji@thesistitle}\\
-		副\enskip{}标\enskip{}题 & \ulinecvcbc{\tongji@thesissubtitle}\\
-		学\quad{}\quad{}院 & \ulinecvcbc{\tongji@school}\\
-		专\quad{}\quad{}业 & \ulinecvcbc{\tongji@major}\\
-		学生姓名 & \ulinecvcbc{\tongji@thesisauthor}\\
-		学\quad{}\quad{}号 & \ulinecvcbc{\tongji@authorschoolnumber}\\
-		指导教师 & \ulinecvcbc{\tongji@advisor}\\
-		日\quad{}\quad{}期 & \ulinecvcbc{\tongji@thesisyear{}年\tongji@thesismonth{}月\tongji@thesisday{}日}\\
+	\begin{information}{M{4em}M{18em}}	
+		课题名称 & \ulinecentered{\tongji@thesistitle}\\
+		副\enskip{}标\enskip{}题 & \ulinecentered{\tongji@thesissubtitle}\\
+		学\quad{}\quad{}院 & \ulinecentered{\tongji@school}\\
+		专\quad{}\quad{}业 & \ulinecentered{\tongji@major}\\
+		学生姓名 & \ulinecentered{\tongji@thesisauthor}\\
+		学\quad{}\quad{}号 & \ulinecentered{\tongji@authorschoolnumber}\\
+		指导教师 & \ulinecentered{\tongji@advisor}\\
+		日\quad{}\quad{}期 & \ulinecentered{\tongji@thesisyear{}年\tongji@thesismonth{}月\tongji@thesisday{}日}\\
 	\end{information}
 
 	\vspace*{\fill}
@@ -387,7 +501,6 @@
 }
 
 %%% custom information %%%
-
 \renewcommand{\maketitle}{%
 	\MakeFrontCover
 	\frontmatter

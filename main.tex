@@ -1,4 +1,5 @@
-\documentclass[color,notimes]{tongjithesis}
+\documentclass[color]{tongjithesis}
+\addbibresource[location=local]{tongjithesis.bib}
 
 \usepackage{lipsum}
 \usepackage{duckuments}
@@ -187,62 +188,27 @@ int main(void) {
 \midrule
 的的使士院，如动情品状，布友来！& 议出人动气白知晚高人一？个亲地然回。\\
 看一们破？ & 布大山兴成亚个品人打家一世从长起言足业年费推单主王良是，的鱼饭天年发。为易费中民评不以，原风的下功我这影富在种脑制使亮得构爱有市么到生去？\\
-病接县星未进多包不家 & 选管院人……风交色观世妈，传出真战杂合族轮为家特当日星差内女的知知交人画如几共的地健类去；们们定民统年件度任不当保年们花的习理身，受阳多人目生于绿。果吃知虽湾：现方管数，精性不学那血，科过一过国，来专心特别又认洲为海，代童高车动第本。目日第谢！假老乐国只作下现技，上来年管决讲员文地才备。如结呢何在公公。如艺唱、上个论他式文轻起很一杂赛候却衣太方，人前血量太作都国区资子他；场车业得。\\
+病接县星未进多包不家 \cite{jam91} \citet{jam91} & 选管院人……风交色观世妈，传出真战杂合族轮为家特当日星差内女的知知交人画如几共的地健类去；们们定民统年件度任不当保年们花的习理身，受阳多人目生于绿。果吃知虽湾：现方管数，精性不学那血，科过一过国，来专心特别又认洲为海，代童高车动第本。目日第谢！假老乐国只作下现技，上来年管决讲员文地才备。如结呢何在公公。如艺唱、上个论他式文轻起很一杂赛候却衣太方，人前血量太作都国区资子他；场车业得。\\
 \bottomrule
 \end{longtable}
 
-\subsection{引用}
-测试 
-\cite{jon88}                    \par
-\cite{jon89}                    \par
-\cite{jon90}                    \par
-
-\cite{lzp1}                     \par
-\cite{lzp2}                     \par
-\cite{lzp3}                     \par
-
-\citet{jon90}                   \par
-\citet[42]{jon90}               \par
-
-\citep{jon90}                   \par
-\citep[42]{jon90}               \par
-\citep[see][42]{jon90}          \par
-
-% Star Commands
-\citet*{jon90}                  \par
-\citep*{jon90}                  \par
-
-% Multi Citations
-\citet{jon90,jam91}             \par
-\citet{jon90,jon91}             \par
-\citet{jon92,jon92b}            \par
-
-\citep{jon90,jam91}             \par
-\citep{jon90,jon91}             \par
-\citep{jon92,jon92b}            \par
-
-\citep{jon90,jon91,jon92,jam91} \par
-
-% Extended Citation Commands
-\citealt{jon90}                 \par
-\citealt*{jon90}                \par
-\citealp{jon90}                 \par
-\citealp*{jon90}                \par
-\citealp{jon90,jam91}           \par
-\citealp[32]{jon90}             \par
-\citenum{jon90}                 \par
-\citetext{priv.\ comm.}         \par
-
-\citeauthor{jon90}              \par
-\citeauthor{lzp3}				\par
-\citeauthor*{jon90}             \par
-\citeyear{jon90}                \par
-\citeyearpar{jon90}             \par
+\clearpage
+{
+	\hyphenpenalty=1000 %断词阈值，值越大越不容易出现断词
+	\tolerance=500 %丑度，10000为最大无溢出盒子
+	\hbadness=100 %如果丑度超过hbadness这一阀值，那么就会发出警告
+	\printbibliography[heading=bibintoc,title=参考文献]
+}
 
 \clearpage
-\addcontentsline{toc}{chapter}{参考文献}
-\bibliography{tongjithesis.bib}
-\nocite{*}
+\addcontentsline{toc}{chapter}{本科就读期间取得的学术成果}
+\chapter*{本科就读期间取得的学术成果}
+\begin{enumerate}
+	\item 1
+	\item 2
+	\item 3
+	\item 4
+\end{enumerate}
 
 \clearpage
 \addcontentsline{toc}{chapter}{致~谢}
