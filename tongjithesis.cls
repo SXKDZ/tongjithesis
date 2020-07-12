@@ -289,47 +289,60 @@
 }
 
 %%% code listing %%%
-\RequirePackage{listings,xcolor}
-\lstset{
-	backgroundcolor=\color{white},
-	basicstyle=\zihao{5}\ttfamily,
-	columns=flexible,
-	breakatwhitespace=false,
-	breaklines=true,
-	captionpos=b,
-	frame=single,
-	numbers=left,
-	numbersep=5pt,
-	showspaces=false,
-	showstringspaces=false,
-	showtabs=false,
-	stepnumber=1,
-	rulecolor=\color{black},
-	tabsize=2,
-	texcl=true,
-	title=\lstname,
-	escapeinside={\%*}{*)},
-	extendedchars=false,
-	mathescape=true,
-	xleftmargin=3em,
-	xrightmargin=3em,
+\RequirePackage{xcolor}
+\RequirePackage[chapter]{minted}	% listings sucks, use minted, require installation of pygmentize
+\RequirePackage{mdframed}	%achieve code box
+\mdfdefinestyle{codebox}{
+	leftmargin=3em,
+	rightmargin=3em,
+	innertopmargin=1em,
+	innerbottommargin=1em,
+	linewidth=0.6pt
 }
-\iftongji@color
-	\lstset{
-		numberstyle=\color{gray},
-		keywordstyle=\color{blue},
-		commentstyle=\itshape\color{green!40!black},
-		stringstyle=\color{orange},
+\newminted{python}{
+	linenos=true,
+	breaklines=true,
+	breakanywhere=true,
+	frame=none,
+	python3=true,
+	fontsize=\zihao{5},
+	numbersep=2em,
+	style=default,
+	tabsize=2,
+	xleftmargin=0.5em,
+	xrightmargin=0.5em,
 	}
+\newminted{bash}{
+	linenos=true,
+	breaklines=true,
+	breakanywhere=true,
+	frame=none,
+	fontsize=\zihao{5},
+	numbersep=2em,
+	style=default,
+	tabsize=2,
+	xleftmargin=0.5em,
+	xrightmargin=0.5em,
+	}
+\newminted{cpp}{
+	linenos=true,
+	breaklines=true,
+	breakanywhere=true,
+	frame=none,
+	fontsize=\zihao{5},
+	numbersep=2em,
+	style=default,
+	tabsize=2,
+	xleftmargin=0.5em,
+	xrightmargin=0.5em,	
+	}
+\iftongji@color
+	\relax
 \else
-   \lstset{
-	   numberstyle=\color{black},
-	   keywordstyle=\color{black},
-	   commentstyle=\itshape\color{black},
-	   stringstyle=\color{black},
-   }
+	\usemintedstyle{bw}
 \fi
-\renewcommand{\lstlistingname}{代码}
+\renewcommand{\theFancyVerbLine}{\rmfamily \textcolor{gray}{\zihao{5} \oldstylenums{\arabic{FancyVerbLine}}}} %re-define line numbers format
+\renewcommand{\listingscaption}{代码}
 
 %%% algorithm pseudocode %%%
 \RequirePackage[linesnumbered,ruled,vlined]{algorithm2e}
